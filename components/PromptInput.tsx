@@ -2,7 +2,7 @@
 "use client";
 
 import fetchSuggestionFromChatGPT from "@/lib/fetchSuggestionFromChatGPT";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import useSWR from "swr";
 
 // propmtinput is client component as user has to interact with the buttons in this loadComponents. rest components in next13 are server based components
@@ -10,14 +10,25 @@ import useSWR from "swr";
 const PromptInput = () => {
   const [input, setInput] = useState("");
 
-  const suggestions = [
-    "Create a black and white abstract painting of a river landscape in 4K resolution.",
-    "Create a modern abstract painting of a flying bird in a sunset sky, in 4K resolution.",
-    "A modern, abstract painting of an open book with a black and white butterfly resting on its pages in 4K resolution.",
-    "Create a photo-realistic oil painting of a sun-drenched beach in modern times.",
-    "Generate a modern, black and white abstract oil painting of a cityscape at night.",
-    "Create a 4k abstract modern oil painting of a house in a forest with a bright yellow moon in the sky.",
-  ];
+  const submitPrompt = async(useSuggestion?: boolean) => {
+    const inputPrompt = input;
+    setInput("");
+    const p = useSuggestion ? suggestion: inputPrompt;
+    const res = await fetch('http://localhost:7071/api/generateImage', { 
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({prompt: p})
+    })
+    console.log(res);
+    const data = await res.json();
+  }
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await submitPrompt();
+  }
 
   //isLoading used at the start. when we mutate it will use isValidate
 
@@ -34,7 +45,7 @@ const PromptInput = () => {
 
   return (
     <div className="m-10">
-      <form className="flex flex-col lg:flex-row shadow-md shadow-slate-400/10 border rounded-md lg:divide-x">
+      <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row shadow-md shadow-slate-400/10 border rounded-md lg:divide-x">
         <textarea
           placeholder={
             (loading && "Loading...") || suggestion 
@@ -55,6 +66,7 @@ const PromptInput = () => {
           Generate
         </button>
         <button
+          onClick={() => submitPrompt(true)}
           type="button"
           className="p-4 bg-violet-400 text-white transition-colors duration-200 font-bold disabled:text-gray-300 disabled:cursor-not-allowed disabled:bg-gray-400"
         >

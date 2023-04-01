@@ -6,7 +6,7 @@ const fetchSuggestionFromChatGPT = async() =>{
     }
   );
   const textData = (await response.text()).trim();
-    console.log(textData);
+  console.log(textData);
   return textData;
 }
 
