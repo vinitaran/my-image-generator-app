@@ -69,7 +69,13 @@ The video then covers building the prompt input component, creating the client p
 
 The video concludes with a final demo of the app and a summary of the build process.
 
+LOCAL_SUGGESTION=http://localhost:7071/api/getChatGPTSuggestion
+LOCAL_GET_IMAGES=http://localhost:7071/api/getImages
+LOCAL_GENERATE_IMAGES=http://localhost:7071/api/generateImage
 
+AZURE_SUGGESTION=https://ai-image-generator-app-vin.azurewebsites.net/api/getchatgptsuggestion
+AZURE_GET_IMAGES=https://ai-image-generator-app-vin.azurewebsites.net/api/getimages
+AZURE_GENERATE_IMAGES=https://ai-image-generator-app-vin.azurewebsites.net/api/generateimage
 
 
 
