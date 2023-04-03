@@ -21,7 +21,7 @@ app.http("generateImage", {
     const { prompt } = await request.json();
 
     console.log(`Prompt is ${prompt}`);
-
+    //communicate to dalle ->  pass prompt -> return image url
     const response = await openai.createImage({
       prompt: prompt,
       n: 1,
@@ -29,24 +29,31 @@ app.http("generateImage", {
     });
     image_url = response.data.data[0].url;
 
-    // Download the image and return it as a arraybuffer
+    // download image
+    // mention responsetype -> response should be array buffer(represent image in blocb fashion - png representation)
+    // create arraybuffer to download image and save the image in azure server
     const res = await axios.get(image_url, { responseType: "arraybuffer" });
     const arrayBuffer = res.data;
 
+    // create sas token
     sasToken = await generateSASToken();
 
+    // connect to account
     const blobServiceClient = new BlobServiceClient(
       `https://${accountName}.blob.core.windows.net?${sasToken}`
     );
 
+    //connect to container
     const containerClient = blobServiceClient.getContainerClient(containerName);
 
     // generate current timestamp
     const timestamp = new Date().getTime();
     const file_name = `${prompt}_${timestamp}.png`;
 
+    // save image in blockblob
     const blockBlobClient = containerClient.getBlockBlobClient(file_name);
 
+    //upload image
     try {
       await blockBlobClient.uploadData(arrayBuffer);
       console.log("File uploaded successfully!");

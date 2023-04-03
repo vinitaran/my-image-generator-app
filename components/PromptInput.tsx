@@ -1,9 +1,11 @@
 // helps to use state and click handlers
 "use client";
 
+import fetchImage from "@/lib/fetchImage";
 import fetchSuggestionFromChatGPT from "@/lib/fetchSuggestionFromChatGPT";
 import { FormEvent, useState } from "react";
 import useSWR from "swr";
+import {toast} from 'react-hot-toast';
 
 // propmtinput is client component as user has to interact with the buttons in this loadComponents. rest components in next13 are server based components
 
@@ -14,15 +16,31 @@ const PromptInput = () => {
     const inputPrompt = input;
     setInput("");
     const p = useSuggestion ? suggestion: inputPrompt;
+
+    const notificationPrompt = p;
+    const notificationPromptShort = notificationPrompt?.slice(0,20);
+
+    const notification = toast.loading(
+      `Your image is being generated: ${notificationPromptShort}...`
+    )
+
     const res = await fetch('http://localhost:7071/api/generateImage', { 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({prompt: p})
-    })
+    });
+
     console.log(res);
-    const data = await res.json();
+
+    // const data = await res.json();
+    
+    toast.success(`Your AI art is generated!`,{
+      id: notification,
+    });
+
+    updateImages();
   }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -38,6 +56,10 @@ const PromptInput = () => {
     mutate,
     isValidating,
   } = useSWR("/api/suggestion", fetchSuggestionFromChatGPT, {
+    revalidateOnFocus: false,
+  });
+
+  const { mutate: updateImages } = useSWR("images", fetchImage, {
     revalidateOnFocus: false,
   });
 
