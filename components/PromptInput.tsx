@@ -24,7 +24,7 @@ const PromptInput = () => {
       `Your image is being generated: ${notificationPromptShort}...`
     )
 
-    const res = await fetch('http://localhost:7071/api/generateImage', { 
+    const res = await fetch('https://ai-image-generator-app-vin.azurewebsites.net/api/generateimage', { 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

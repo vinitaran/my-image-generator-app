@@ -1,6 +1,6 @@
 const fetchImage = async() => {
     const response = await fetch(
-        "http://localhost:7071/api/getImages",
+        "https://ai-image-generator-app-vin.azurewebsites.net/api/getimages",
         {
           cache: "no-store",
         }

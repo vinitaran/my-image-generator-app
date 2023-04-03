@@ -1,6 +1,6 @@
 const fetchSuggestionFromChatGPT = async() =>{
   const response = await fetch(
-    "http://localhost:7071/api/getChatGPTSuggestion",
+    "https://ai-image-generator-app-vin.azurewebsites.net/api/getchatgptsuggestion",
     {
       cache: "no-store",
     }
